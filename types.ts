@@ -18,7 +18,8 @@ export interface CarReturnPayload {
   flowId: string;
   taskId: string;
   roomId: string;
-  assetType: 'CAR';
+  assetType: 'FRIDGE' | 'CAR';
+  inspector: string;
   returned: boolean;
   conditionAfter: Condition;
   notes: string;

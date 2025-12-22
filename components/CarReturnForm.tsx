@@ -15,6 +15,7 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
   const [taskId, setTaskId] = useState(params.taskId || '');
   const [tasks, setTasks] = useState<TaskSummary[] | null>(null);
 
+  const [inspector, setInspector] = useState('');
   const [returned, setReturned] = useState<boolean | null>(null);
   const [condition, setCondition] = useState<Condition | ''>('');
   const [notes, setNotes] = useState('');
@@ -97,6 +98,10 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
       setError('ขาดข้อมูล flowId/taskId/roomId');
       return;
     }
+    if (!inspector) {
+      setError('กรุณาเลือกผู้ตรวจ');
+      return;
+    }
     if (returned === null) {
       setError('กรุณาระบุว่าคืนตู้เย็นหรือยัง');
       return;
@@ -119,6 +124,7 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
         taskId: taskId,
         roomId: roomId,
         assetType: 'FRIDGE',
+        inspector,
         returned: returned,
         conditionAfter: condition as Condition,
         notes: notes,
@@ -300,9 +306,29 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
           </div>
         </Card>
 
-        {/* 4. Signature */}
-        <Card title="ลายเซ็นผู้ตรวจสอบ (Signature)">
-          <SignaturePad onChange={setSignature} />
+        {/* 4. Inspector & Signature */}
+        <Card title="ผู้ตรวจสอบและลายเซ็น">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">ผู้ตรวจ</label>
+              <select
+                value={inspector}
+                onChange={(e) => setInspector(e.target.value)}
+                className="block w-full rounded-lg border-slate-300 bg-white border p-2.5 focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="">-- เลือกผู้ตรวจ --</option>
+                <option value="Ma">Ma</option>
+                <option value="KK">KK</option>
+                <option value="Kaopan">Kaopan</option>
+                <option value="พี่ก้อย">พี่ก้อย</option>
+                <option value="พี่ยุ">พี่ยุ</option>
+              </select>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-slate-700 mb-2">ลายเซ็นผู้ตรวจสอบ</p>
+              <SignaturePad onChange={setSignature} />
+            </div>
+          </div>
         </Card>
 
         {/* Errors */}
