@@ -20,7 +20,7 @@ const App: React.FC = () => {
       <header className="bg-white shadow-sm sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <h1 className="text-xl font-bold text-indigo-900">Checkout Service</h1>
+            <h1 className="text-xl font-bold text-indigo-900">ใบตรวจสอบรับตู้เย็น</h1>
             <span className="text-xs font-semibold bg-indigo-50 text-indigo-700 px-2 py-1 rounded">Fridge Return</span>
           </div>
         </div>
