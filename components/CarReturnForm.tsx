@@ -37,8 +37,8 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
         if (res.ok) {
           if (!roomId && res.flow?.roomId) setRoomId(res.flow.roomId);
           if (!taskId && res.tasks?.length) {
-            const carTask = res.tasks.find((t) => t.type === 'CAR');
-            if (carTask?.taskId) setTaskId(carTask.taskId);
+            const fridgeTask = res.tasks.find((t) => t.type === 'FRIDGE');
+            if (fridgeTask?.taskId) setTaskId(fridgeTask.taskId);
           }
           if (res.tasks) setTasks(res.tasks);
         }
@@ -98,7 +98,7 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
       return;
     }
     if (returned === null) {
-      setError('กรุณาระบุว่าคืนสติกเกอร์หรือไม่ (Please select sticker return status)');
+      setError('กรุณาระบุว่าคืนตู้เย็นหรือยัง');
       return;
     }
     if (!condition) {
@@ -118,7 +118,7 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
         flowId: flowIdState,
         taskId: taskId,
         roomId: roomId,
-        assetType: 'CAR',
+        assetType: 'FRIDGE',
         returned: returned,
         conditionAfter: condition as Condition,
         notes: notes,
@@ -162,7 +162,7 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-slate-800 mb-2">บันทึกสำเร็จ</h2>
-          <p className="text-slate-500">ข้อมูลการคืนสติกเกอร์ถูกบันทึกเรียบร้อยแล้ว</p>
+          <p className="text-slate-500">ข้อมูลการคืนตู้เย็นถูกบันทึกเรียบร้อยแล้ว</p>
         </Card>
       </div>
     );
@@ -190,7 +190,7 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
         {/* 1. Status Check */}
         <Card title="สถานะการคืน (Return Status)">
           <div className="flex flex-col space-y-3">
-            <p className="text-slate-700 font-medium">คืนสติกเกอร์ที่จอด?</p>
+            <p className="text-slate-700 font-medium">คืนตู้เย็นแล้วหรือยัง?</p>
             <div className="grid grid-cols-2 gap-4">
               <label className={`relative flex flex-col items-center p-4 border rounded-xl cursor-pointer transition-all ${returned === true ? 'border-indigo-600 bg-indigo-50 ring-1 ring-indigo-600' : 'border-slate-200 hover:bg-slate-50'}`}>
                 <input 
