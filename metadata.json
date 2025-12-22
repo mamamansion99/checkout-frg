@@ -1,0 +1,5 @@
+{
+  "name": "Car Return Checkout",
+  "description": "Digital form for returning car parking stickers and assessing condition during checkout.",
+  "requestFramePermissions": []
+}
