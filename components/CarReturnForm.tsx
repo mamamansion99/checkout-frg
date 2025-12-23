@@ -144,7 +144,7 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
       };
 
       const result = await submitCarReturn(payload);
-      if (result.ok) {
+      if (result.ok !== false) {
         setSuccessData({
           roomId,
           inspector,
@@ -152,6 +152,8 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
           deduction: deduction || undefined,
         });
         setIsSuccess(true);
+      } else {
+        setError('เกิดข้อผิดพลาดจากระบบ: ' + (result.message || ''));
       }
     } catch (err) {
       setError('เกิดข้อผิดพลาดในการส่งข้อมูล (Submission failed)');
