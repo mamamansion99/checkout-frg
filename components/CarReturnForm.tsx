@@ -25,6 +25,12 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
   
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [successData, setSuccessData] = useState<{
+    roomId: string;
+    inspector: string;
+    condition: Condition | '';
+    deduction?: string;
+  } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loadingMeta, setLoadingMeta] = useState(false);
 
@@ -139,6 +145,12 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
 
       const result = await submitCarReturn(payload);
       if (result.ok) {
+        setSuccessData({
+          roomId,
+          inspector,
+          condition,
+          deduction: deduction || undefined,
+        });
         setIsSuccess(true);
       }
     } catch (err) {
@@ -158,18 +170,63 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
 
   // --- Render ---
 
-  if (isSuccess) {
+  const conditionLabel = (c: Condition | '') => {
+    if (c === Condition.OK) return 'ปกติ';
+    if (c === Condition.DENT) return 'มีรอยบุบ';
+    if (c === Condition.BROKEN) return 'แตกหัก';
+    if (c === Condition.MISSING) return 'สูญหาย';
+    return '-';
+  };
+
+  if (isSuccess && successData) {
     return (
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <Card className="w-full max-w-md text-center p-8">
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
-            <svg className="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+      <div className="min-h-screen bg-slate-50 pb-16 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-72 bg-gradient-to-b from-green-50 to-transparent pointer-events-none" />
+        <div className="max-w-lg mx-auto px-6 pt-12 relative z-10 text-center">
+          <div className="w-24 h-24 bg-green-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-green-200">
+            <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-2">บันทึกสำเร็จ</h2>
-          <p className="text-slate-500">ข้อมูลการคืนตู้เย็นถูกบันทึกเรียบร้อยแล้ว</p>
-        </Card>
+          <h2 className="text-3xl font-bold text-slate-800 mb-2">บันทึกสำเร็จ</h2>
+          <p className="text-slate-500 mb-6">ข้อมูลการรับตู้เย็นถูกส่งเรียบร้อยแล้ว</p>
+
+          <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-white/60 text-left space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-500">ห้อง</span>
+              <span className="text-lg font-bold text-slate-800">{successData.roomId || '-'}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-500">ผู้ตรวจ</span>
+              <span className="text-sm font-semibold text-slate-700">{successData.inspector || '-'}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-slate-500">สภาพหลังคืน</span>
+              <span className="text-sm font-semibold text-slate-700">{conditionLabel(successData.condition)}</span>
+            </div>
+            {successData.deduction && (
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-slate-500">ยอดหัก/เรียกเก็บ</span>
+                <span className="text-sm font-semibold text-red-600">{successData.deduction} บาท</span>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-10 space-y-3">
+            <button
+              onClick={() => window.close()}
+              className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-green-200 transition-transform active:scale-95"
+            >
+              ปิดหน้าต่าง
+            </button>
+            <a
+              href="/"
+              className="block w-full bg-white text-slate-600 font-medium py-3.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors"
+            >
+              กลับไปหน้าหลัก
+            </a>
+          </div>
+        </div>
       </div>
     );
   }
