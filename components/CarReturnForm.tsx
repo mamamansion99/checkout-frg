@@ -9,6 +9,10 @@ interface CarReturnFormProps {
 }
 
 export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
+  const assetType = React.useMemo<'FRIDGE' | 'CAR'>(() => {
+    return params.assetType?.toUpperCase() === 'CAR' ? 'CAR' : 'FRIDGE';
+  }, [params.assetType]);
+
   // --- State ---
   const [flowIdState, setFlowIdState] = useState(params.flowId || '');
   const [roomId, setRoomId] = useState(params.roomId || '');
@@ -44,8 +48,8 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
         if (res.ok) {
           if (!roomId && res.flow?.roomId) setRoomId(res.flow.roomId);
           if (!taskId && res.tasks?.length) {
-            const fridgeTask = res.tasks.find((t) => t.type === 'FRIDGE');
-            if (fridgeTask?.taskId) setTaskId(fridgeTask.taskId);
+            const match = res.tasks.find((t) => t.type === assetType);
+            if (match?.taskId) setTaskId(match.taskId);
           }
           if (res.tasks) setTasks(res.tasks);
         }
@@ -129,7 +133,7 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
         flowId: flowIdState,
         taskId: taskId,
         roomId: roomId,
-        assetType: 'FRIDGE',
+        assetType: assetType,
         inspector,
         returned: returned,
         conditionAfter: condition as Condition,
@@ -156,7 +160,8 @@ export const CarReturnForm: React.FC<CarReturnFormProps> = ({ params }) => {
         setError('เกิดข้อผิดพลาดจากระบบ: ' + (result.message || ''));
       }
     } catch (err) {
-      setError('เกิดข้อผิดพลาดในการส่งข้อมูล (Submission failed)');
+      const message = err instanceof Error ? err.message : 'Submission failed';
+      setError('เกิดข้อผิดพลาดในการส่งข้อมูล: ' + message);
     } finally {
       setIsSubmitting(false);
     }
